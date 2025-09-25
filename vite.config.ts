@@ -18,5 +18,12 @@ export default defineConfig({
       // FIX: `__dirname` is not available in ES modules. Use `import.meta.url` to get an ESM-compatible equivalent.
       '@': path.dirname(fileURLToPath(import.meta.url)),
     }
+  },
+  build: {
+    rollupOptions: {
+      // Don't bundle these packages, assume they are provided externally
+      // by the importmap injected by the deployment environment.
+      external: ['react', 'react-dom', '@google/genai']
+    }
   }
 });

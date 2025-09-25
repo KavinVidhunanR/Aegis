@@ -10,7 +10,7 @@ View your app in AI Studio: https://ai.studio/apps/drive/1FUhk3phQPm9b4T9hcghdKU
 
 ## Setting the API Key
 
-To use this application, you must configure your Gemini API key. Vite requires environment variables to be prefixed with `VITE_` for security reasons.
+To use this application, you must configure your Gemini API key.
 
 1.  Open the **Secrets** panel in AI Studio.
 2.  Click **Create new secret**.

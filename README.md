@@ -8,13 +8,12 @@ This contains everything you need to run your app locally.
 
 View your app in AI Studio: https://ai.studio/apps/drive/1FUhk3phQPm9b4T9hcghdKU2zDNcuHAHe
 
-## Run Locally
+## Setting the API Key
 
-**Prerequisites:**  Node.js
+To use this application, you must configure your Gemini API key.
 
-1.  **Install dependencies:**
-    `npm install`
-2.  **Set API Key:** Create a new file named `.env` in the root of your project and add your Gemini API key like this:
-    `VITE_GEMINI_API_KEY=YOUR_API_KEY_HERE`
-3.  **Run the app:**
-    `npm run dev`
+1.  Open the **Secrets** panel in AI Studio.
+2.  Click **Create new secret**.
+3.  Set the **Name** of the secret to `API_KEY`.
+4.  Set the **Value** to your Gemini API key.
+5.  Ensure the secret is enabled. The application will automatically have access to this key.

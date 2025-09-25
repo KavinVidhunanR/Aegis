@@ -1,12 +1,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { ChatMessage as ChatMessageType, MessageSender, AegisResponse } from './types.ts';
-import { getAegisResponse } from './services/geminiService.ts';
-import { checkForCriticalKeywords } from './utils/safetyCheck.ts';
-import ChatInput from './components/ChatInput.tsx';
-import ChatMessage from './components/ChatMessage.tsx';
-import ScoreDisplay from './components/ScoreDisplay.tsx';
-import { AegisIcon, RefreshIcon } from './components/Icons.tsx';
+import { ChatMessage as ChatMessageType, MessageSender, AegisResponse } from './types';
+import { getAegisResponse } from './services/geminiService';
+import { checkForCriticalKeywords } from './utils/safetyCheck';
+import ChatInput from './components/ChatInput';
+import ChatMessage from './components/ChatMessage';
+import ScoreDisplay from './components/ScoreDisplay';
+import { AegisIcon, RefreshIcon } from './components/Icons';
 
 const initialAegisResponse: AegisResponse = {
   empatheticReply: "Greetings. I am AEGIS, a tool for focused self-reflection. I'm here to listen and help you explore your thoughts and feelings. Please remember, I am an AI and not a substitute for professional human support. What is on your mind today?",

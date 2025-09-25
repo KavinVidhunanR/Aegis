@@ -1,5 +1,5 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { AegisResponse } from '../types.ts';
+import { AegisResponse } from '../types';
 
 const responseSchema = {
   type: Type.OBJECT,
@@ -54,11 +54,11 @@ const systemInstruction = `You are AEGIS, a compassionate and scholarly AI digit
 Your entire output must be a single JSON object that conforms to the provided schema.`;
 
 export const getAegisResponse = async (userInput: string): Promise<AegisResponse> => {
-  const apiKey = process.env.API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
   
   // Check for the API key at runtime, when the function is actually called.
   if (!apiKey) {
-    throw new Error("Gemini API key not configured. Please set the GEMINI_API_KEY secret in your project's settings.");
+    throw new Error("Gemini API key not configured. Please set the VITE_GEMINI_API_KEY secret in your project's settings.");
   }
 
   const ai = new GoogleGenAI({ apiKey });
@@ -89,7 +89,7 @@ export const getAegisResponse = async (userInput: string): Promise<AegisResponse
     console.error("Error fetching AEGIS response:", error);
     // Provide more specific feedback on common API errors.
     if (error instanceof Error && /API key/.test(error.message)) {
-      throw new Error("Your Gemini API key seems to be invalid or missing. Please check your environment secrets.");
+      throw new Error("Your Gemini API key seems to be invalid or missing. Please check your VITE_GEMINI_API_KEY environment secret.");
     }
     throw new Error("Failed to get a response from AEGIS. The service may be temporarily unavailable.");
   }

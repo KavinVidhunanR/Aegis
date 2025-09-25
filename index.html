@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3e%3cpath d='M4,2h16v9c0,7-8,11-8,11s-8-4-8-11V2z' fill='%23b91c1c' stroke='black' stroke-width='0.2' /%3e%3ccircle cx='12' cy='11.5' r='4.5' fill='white' /%3e%3crect x='11' y='8.5' width='2' height='5' fill='white' stroke='black' stroke-width='0.2' /%3e%3crect x='9.5' y='10' width='5' height='2' fill='white' stroke='black' stroke-width='0.2' /%3e%3c/svg%3e" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AEGIS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg-main: #f8f9fa; /* Soft off-white */
+        --bg-subtle: #ffffff; /* White for cards/modals */
+        --bg-accent: #b91c1c; /* Strong red from logo */
+        --bg-accent-darker: #991b1b;
+        --bg-user: #e9ecef; /* Light grey for user messages */
+        
+        --text-main: #212529; /* Very dark grey for main text */
+        --text-heading: #111827; /* A slightly darker black for headings */
+        --text-muted: #6c757d; /* Muted grey for secondary text */
+        --text-light: #ffffff; /* White text for dark backgrounds */
+        
+        --border-color: #dee2e6;
+
+        --font-sans: 'Inter', sans-serif;
+      }
+      body {
+        font-family: var(--font-sans);
+        background-color: var(--bg-main);
+        color: var(--text-main);
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.5s ease-out forwards;
+      }
+      .animate-fade-in-delayed {
+        animation: fadeIn 0.5s ease-out 0.2s forwards; /* 0.2s delay */
+        opacity: 0; /* Start hidden to prevent flash */
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.20.0",
+    "vite": "https://aistudiocdn.com/vite@^7.1.7",
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.0.3",
+    "path": "https://aistudiocdn.com/path@^0.12.7",
+    "url": "https://aistudiocdn.com/url@^0.11.4"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

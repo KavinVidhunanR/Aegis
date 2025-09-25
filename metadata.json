@@ -1,0 +1,5 @@
+{
+  "name": "AEGIS",
+  "description": "AEGIS is an AI coach designed to support wellbeing. It listens empathetically, encourages journaling, provides a mood analysis score, and offers supportive tips, with built-in safety protocols for severe distress.",
+  "requestFramePermissions": []
+}

@@ -12,7 +12,7 @@ AEGIS exists because this is unacceptable. Teens deserve AI that protects, guide
 
 # Our Mission
 
-AEGIS is designed to:
+**AEGIS is designed to**:
 
 - Detect addictive patterns in teen digital behavior.
 - Nudge users to pause and reflect when engagement becomes harmful.
@@ -23,13 +23,13 @@ AEGIS is about guiding digital interactions responsibly, helping teens regain co
 
 # How It Works
 
-# Behavior Logging:
+**Behavior Logging**:
 - Tracks anonymized, safe indicators of digital activity (scrolling, session length, interaction types).
-# Pattern Analysis:
+**Pattern Analysis**:
 - Uses ethical, explainable AI to identify potential “brainrot” or harmful engagement loops.
-# Intervention:
+**Intervention**:
 - Nudges, reflective prompts, and gamified trust levels encourage teens to pause, reflect, and regain agency.
-# Dashboard:
+**Dashboard**:
 - Teens and parents can view safe, anonymized insights about patterns — no raw personal data is stored.
 
 # Why AEGIS Over Existing Solutions
@@ -39,7 +39,7 @@ AEGIS is about guiding digital interactions responsibly, helping teens regain co
 - Human-Centered Interventions: Instead of replacing human connection, it strengthens self-awareness, reflection, and empathy.
 
 # Impact So Far
-# AEGIS is a working prototype, designed as a browser extension and web dashboard, demonstrating:
+ **AEGIS is a working prototype, designed as a browser extension and web dashboard, demonstrating**:
 
 - Detecting harmful engagement patterns in simulated teen sessions.
 - Interventions tested on dummy datasets reflecting real-world behaviors.
@@ -47,7 +47,7 @@ AEGIS is about guiding digital interactions responsibly, helping teens regain co
 
 # Future Vision
 
-# AEGIS aims to:
+ **AEGIS aims to**:
 
 - Expand interventions using AI that respects human development stages.
 - Collaborate with educators, mental health experts, and researchers.

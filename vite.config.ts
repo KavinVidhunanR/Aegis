@@ -16,7 +16,7 @@ export default defineConfig({
   resolve: {
     alias: {
       // FIX: `__dirname` is not available in ES modules. Use `import.meta.url` to get an ESM-compatible equivalent.
-      '@': path.dirname(fileURLToPath(import.meta.url)),
+      '@': path.resolve(path.dirname(fileURLToPath(import.meta.url)), 'src'),
     }
   }
 });

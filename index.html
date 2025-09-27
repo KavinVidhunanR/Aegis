@@ -9,42 +9,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --bg-main: #f8f9fa; /* Soft off-white */
-        --bg-subtle: #ffffff; /* White for cards/modals */
-        --bg-accent: #b91c1c; /* Strong red from logo */
-        --bg-accent-darker: #991b1b;
-        --bg-user: #e9ecef; /* Light grey for user messages */
-        
-        --text-main: #212529; /* Very dark grey for main text */
-        --text-heading: #111827; /* A slightly darker black for headings */
-        --text-muted: #6c757d; /* Muted grey for secondary text */
-        --text-light: #ffffff; /* White text for dark backgrounds */
-        
-        --border-color: #dee2e6;
-
-        --font-sans: 'Inter', sans-serif;
-      }
-      body {
-        font-family: var(--font-sans);
-        background-color: var(--bg-main);
-        color: var(--text-main);
-      }
-
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-
-      .animate-fade-in {
-        animation: fadeIn 0.5s ease-out forwards;
-      }
-      .animate-fade-in-delayed {
-        animation: fadeIn 0.5s ease-out 0.2s forwards; /* 0.2s delay */
-        opacity: 0; /* Start hidden to prevent flash */
-      }
-    </style>
   <script type="importmap">
 {
   "imports": {
@@ -62,5 +26,6 @@
 </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

@@ -38,13 +38,6 @@ AEGIS is about guiding digital interactions responsibly, helping teens regain co
 - Ethical Transparency: Open-source design, clear methodology, and selfless intent — no data exploitation.
 - Human-Centered Interventions: Instead of replacing human connection, it strengthens self-awareness, reflection, and empathy.
 
-# Impact So Far
- **AEGIS is a working prototype, designed as a browser extension and web dashboard, demonstrating**:
-
-- Detecting harmful engagement patterns in simulated teen sessions.
-- Interventions tested on dummy datasets reflecting real-world behaviors.
-- Ethical, privacy-first design principles for teen mental health.
-
 # Future Vision
 
  **AEGIS aims to**:

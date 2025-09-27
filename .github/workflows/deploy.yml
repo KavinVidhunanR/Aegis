@@ -34,10 +34,8 @@ jobs:
         with:
           node-version: 18 # Use a recent Long-Term Support version of Node.js
           cache: 'npm'
-      - name: Clean npm cache
-        run: npm cache clean --force
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Build project
         # This command runs "vite build" as defined in your package.json
         # Vite will use the 'base: "/Aegis/"' setting from your vite.config.ts

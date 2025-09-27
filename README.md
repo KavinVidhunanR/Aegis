@@ -1,51 +1,69 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# AEGIS – Ethical AI Guard for Teen Safety
 
-# AEGIS: AI Wellbeing Coach
+# A selfless project built to protect teens from the unseen harms of AI-driven digital spaces.
 
-This repository contains the source code for AEGIS, an AI coach designed to support wellbeing.
+# The Problem
 
-## Deploying Your Application
+Teens today spend hours in front of screens, often interacting with AI chatbots and highly stimulating content. These systems can exploit their emotional vulnerabilities, hijack attention, and even worsen mental health crises.
 
-This project is configured for a professional, secure deployment on [Vercel](https://vercel.com/).
+Recent events, including tragic suicides linked to AI chatbots, have shown that current AI platforms fail to safeguard teens. Systems meant for homework help or companionship can, unintentionally or not, become harmful confidants.
 
-### 1. Fork & Clone Repository
-First, fork this repository to your own GitHub account, and then clone it to your local machine.
+AEGIS exists because this is unacceptable. Teens deserve AI that protects, guides, and empowers them — not exploits them.
 
-### 2. Deploy to Vercel
-1.  Go to [vercel.com](https://vercel.com/) and sign up or log in.
-2.  Click **Add New...** > **Project**.
-3.  Import the GitHub repository you just forked.
-4.  In the **Configure Project** screen, expand the **Environment Variables** section.
-5.  Add a new variable:
-    *   **Name**: `API_KEY`
-    *   **Value**: Paste your Gemini API key here.
-6.  Click **Deploy**. Vercel will automatically build and deploy your application.
+# Our Mission
 
-## Running Locally
+AEGIS is designed to:
 
-To run the application locally in a way that mimics the Vercel production environment (including the secure serverless function), you should use the Vercel CLI.
+- Detect addictive patterns in teen digital behavior.
+- Nudge users to pause and reflect when engagement becomes harmful.
+- Provide safe journaling and trust-building exercises to strengthen mental resilience.
+- Give parents and educators tools to understand teen screen use, without invading privacy.
 
-1.  **Install Vercel CLI:**
-    ```bash
-    npm i -g vercel
-    ```
+AEGIS is about guiding digital interactions responsibly, helping teens regain control over their attention and emotions.
 
-2.  **Link Your Project:**
-    In your project's root directory, link it to your Vercel project.
-    ```bash
-    vercel link
-    ```
+# How It Works
 
-3.  **Pull Environment Variables:**
-    This will create a `.env` file in your local directory containing the `API_KEY` you set in the Vercel dashboard.
-    ```bash
-    vercel env pull .env.local
-    ```
+# Behavior Logging:
+- Tracks anonymized, safe indicators of digital activity (scrolling, session length, interaction types).
+# Pattern Analysis:
+- Uses ethical, explainable AI to identify potential “brainrot” or harmful engagement loops.
+# Intervention:
+- Nudges, reflective prompts, and gamified trust levels encourage teens to pause, reflect, and regain agency.
+# Dashboard:
+- Teens and parents can view safe, anonymized insights about patterns — no raw personal data is stored.
 
-4.  **Run the Development Server:**
-    ```bash
-    vercel dev
-    ```
-    This command starts a local server (usually on `http://localhost:3000`) that runs your frontend app and your serverless function in `api/`.
+# Why AEGIS Over Existing Solutions
+
+- Focus on Teen Safety: Unlike current AI chatbots or platforms, which can inadvertently exploit vulnerabilities, AEGIS is built first for protection.
+- Ethical Transparency: Open-source design, clear methodology, and selfless intent — no data exploitation.
+- Human-Centered Interventions: Instead of replacing human connection, it strengthens self-awareness, reflection, and empathy.
+
+# Impact So Far
+# AEGIS is a working prototype, designed as a browser extension and web dashboard, demonstrating:
+
+- Detecting harmful engagement patterns in simulated teen sessions.
+- Interventions tested on dummy datasets reflecting real-world behaviors.
+- Ethical, privacy-first design principles for teen mental health.
+
+# Future Vision
+
+# AEGIS aims to:
+
+- Expand interventions using AI that respects human development stages.
+- Collaborate with educators, mental health experts, and researchers.
+- Advocate for ethical standards in AI platforms used by minors.
+- Eventually integrate with mainstream digital platforms to protect teens before harm occurs.
+
+# How to Contribute
+
+AEGIS is open for learning and collaboration:
+
+- Explore the code, understand the interventions, and propose improvements.
+- Do not use AEGIS for harmful purposes — it is strictly designed to protect.
+- Report ideas, bugs, or ethical concerns via issues.
+
+_“Our goal isn’t to be seen. It’s to prevent harm where harm is most invisible.”_
+
+# License
+
+AEGIS is open-source, but use is restricted to educational, research, or ethical interventions. Do not copy or repurpose the code for exploitation.

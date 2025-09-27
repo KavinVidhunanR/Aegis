@@ -99,7 +99,33 @@ export default async function handler(req: Request) {
         });
 
         const jsonText = response.text.trim();
-        const parsedResponse = JSON.parse(jsonText);
+        let parsedResponse: AegisResponse;
+
+        try {
+            if (!jsonText) {
+                // This will be caught by the catch block below.
+                throw new Error("Empty response from AI model.");
+            }
+            parsedResponse = JSON.parse(jsonText);
+        } catch (e) {
+            const errorMessage = e instanceof Error ? e.message : "Unknown parsing error";
+            console.error("Gemini response was not valid JSON for input:", userInput, "Response:", jsonText, "Error:", errorMessage);
+            
+            // Create a gentle, canned response that re-engages the user.
+            const fallbackResponse: AegisResponse = {
+                empatheticReply: "That's an interesting thought. However, my primary purpose is to provide a space for you to reflect on your own feelings and experiences.",
+                reflectionPrompt: "Could we perhaps return to what you were thinking or feeling? I'm here to listen to what's on your mind.",
+                wellbeingScore: 50, // Neutral
+                improvementTip: "Keeping our conversation focused on your self-reflection will be the most helpful path forward.",
+                isSafetyAlert: false,
+            };
+            
+            // Directly return this fallback to gracefully handle the error.
+            return new Response(JSON.stringify(fallbackResponse), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
         
         if (typeof parsedResponse.wellbeingScore !== 'number' || parsedResponse.wellbeingScore < 0 || parsedResponse.wellbeingScore > 100) {
             parsedResponse.wellbeingScore = 50;

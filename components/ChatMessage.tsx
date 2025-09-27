@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
-import { ChatMessage as ChatMessageType, MessageSender } from '../types';
-import { UserIcon, AegisIcon } from './Icons';
-import TypingEffect from './TypingEffect';
+import { ChatMessage as ChatMessageType, MessageSender } from '../types.ts';
+import { UserIcon, AegisIcon } from './Icons.tsx';
+import TypingEffect from './TypingEffect.tsx';
 
 interface ChatMessageProps {
   message: ChatMessageType;

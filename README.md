@@ -14,6 +14,6 @@ To use this application, you must configure your Gemini API key.
 
 1.  Open the **Secrets** panel in AI Studio.
 2.  Click **Create new secret**.
-3.  Set the **Name** of the secret to `VITE_API_KEY`.
+3.  Set the **Name** of the secret to `API_KEY`.
 4.  Set the **Value** to your Gemini API key.
 5.  Ensure the secret is enabled. The application will automatically have access to this key.

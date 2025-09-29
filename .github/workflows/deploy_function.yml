@@ -3,7 +3,7 @@ name: Deploy Supabase Edge Function
 on:
   push:
     branches:
-      - main # Or whatever your default branch is named
+      - main # Or your default branch
   workflow_dispatch:
 
 jobs:
@@ -20,6 +20,6 @@ jobs:
 
       - name: Deploy Supabase Edge Function
         run: |
-          supabase functions deploy process-message --project-id ${{ secrets.SUPABASE_PROJECT_ID }}
+          supabase functions deploy process-message --project-ref ${{ secrets.SUPABASE_PROJECT_ID }}
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}

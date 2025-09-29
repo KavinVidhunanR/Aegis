@@ -5,10 +5,10 @@
 
 export const SUPABASE_CONFIG = {
   // 1. Replace "YOUR_SUPABASE_URL_HERE" with your actual Supabase Project URL
-  url: "YOUR_SUPABASE_URL_HERE",
+  url: "",
 
   // 2. Replace "YOUR_SUPABASE_ANON_KEY_HERE" with your Supabase Project "anon" key
-  anonKey: "YOUR_SUPABASE_ANON_KEY_HERE",
+  anonKey: "",
 };
 
 // This logic checks if you have replaced the placeholder values.

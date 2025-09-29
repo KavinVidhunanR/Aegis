@@ -19,14 +19,10 @@ const Auth: React.FC = () => {
     try {
       if (isSignUp) {
         // Sign Up
-        const { data: { user }, error } = await supabase.auth.signUp({ email, password });
+        // The database trigger 'on_auth_user_created' now handles profile creation automatically.
+        // We no longer need to manually insert from the client.
+        const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        // After sign up, create a teen profile
-        if (user) {
-            const unique_display_id = `teen_${user.id.substring(0, 8)}`;
-            const { error: profileError } = await supabase.from('teens').insert({ id: user.id, unique_display_id });
-            if (profileError) throw profileError;
-        }
         setMessage('Check your email for the verification link!');
       } else {
         // Sign In

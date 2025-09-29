@@ -12,6 +12,14 @@
   
   --border-color: #dee2e6;
 
+  /* Therapist Mode Colors */
+  --bg-therapist-header: #f4f2ff; /* Very light purple */
+  --bg-therapist-accent: #6d28d9; /* Deep violet */
+  --bg-therapist-accent-darker: #5b21b6;
+  --bg-therapist-summary: #faf5ff; /* Lighter purple */
+  --border-therapist: #c4b5fd; /* Soft violet */
+  --text-therapist-heading: #5b21b6;
+
   --font-sans: 'Inter', sans-serif;
 }
 body {

@@ -1,34 +1,33 @@
+import { supabase } from '../lib/supabaseClient.ts';
 import { AegisResponse } from '../types.ts';
 
-export const getAegisResponse = async (userInput: string): Promise<AegisResponse> => {
+type AegisMode = 'PRIVATE' | 'THERAPIST';
+
+export const getAegisResponse = async (userInput: string, mode: AegisMode): Promise<AegisResponse> => {
   try {
-    const response = await fetch('/api/gemini', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ userInput }),
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      throw new Error("User not authenticated. Please sign in again.");
+    }
+
+    const { data, error } = await supabase.functions.invoke('process-message', {
+      body: { userInput, mode, teenId: user.id },
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({ error: 'An unknown server error occurred.' }));
-      throw new Error(errorData.error || `Request failed with status ${response.status}`);
+    if (error) {
+      throw new Error(error.message || "The AI service failed to respond.");
     }
 
-    const parsedResponse = await response.json();
+    // The response from the edge function is already a validated AegisResponse object
+    if (typeof data.wellbeingScore !== 'number' || data.wellbeingScore < 0 || data.wellbeingScore > 100) {
+      data.wellbeingScore = 50;
+    }
     
-    // The server-side function already validates the score, but a redundant check is harmless.
-    if (typeof parsedResponse.wellbeingScore !== 'number' || parsedResponse.wellbeingScore < 0 || parsedResponse.wellbeingScore > 100) {
-        parsedResponse.wellbeingScore = 50; 
-    }
-
-    return parsedResponse as AegisResponse;
-
+    return data as AegisResponse;
   } catch (error) {
-    console.error("Error fetching AEGIS response from backend:", error);
+    console.error("Error invoking Supabase function 'process-message':", error);
     if (error instanceof Error) {
-      // Re-throw the specific error message from the backend or fetch failure
-      throw new Error(error.message);
+      throw error; // Re-throw with specific message
     }
     throw new Error("Failed to get a response from AEGIS. The service may be temporarily unavailable.");
   }

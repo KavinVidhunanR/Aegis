@@ -9,10 +9,26 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { GoogleGenAI, Type } from "https://esm.sh/@google/genai@1.20.0";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from '../_shared/cors.ts'
-import { AegisResponse } from '../../../types.ts';
 
+// --- Type Definitions ---
+// FIX: Define interfaces for the response payload. These types must be defined
+// here to match the frontend types.ts, as Supabase Edge Functions are self-contained.
+interface TherapistSummary {
+  moodCues: string[];
+  possibleStressors: string[];
+  suggestedFollowUp: string;
+}
 
-// --- Schemas and System Instruction (moved from old api/gemini.ts) ---
+interface AegisResponse {
+  empatheticReply: string;
+  reflectionPrompt: string;
+  wellbeingScore: number | null;
+  improvementTip: string;
+  isSafetyAlert: boolean;
+  therapistSummary?: TherapistSummary;
+}
+
+// --- Schemas and System Instruction ---
 
 const baseResponseSchema = {
     empatheticReply: { 
@@ -115,6 +131,7 @@ Your entire output must be a single JSON object that conforms to the provided sc
 // --- Edge Function Logic ---
 
 serve(async (req) => {
+  // This is needed to handle CORS preflight requests.
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders });
   }
@@ -132,20 +149,21 @@ serve(async (req) => {
     );
     
     // 1. Persist the user's message
-    await supabaseAdmin
+    const { error: insertUserError } = await supabaseAdmin
       .from('chats')
       .insert({ teen_id: teenId, sender: 'USER', content: { text: userInput } });
+    if (insertUserError) throw insertUserError;
 
-    // 2. Call Gemini API
-    const apiKey = Deno.env.get('GEMINI_API_KEY');
-    if (!apiKey) throw new Error("Server configuration error: Missing GEMINI_API_KEY");
+    // 2. Call Gemini API - use the API_KEY variable set in Supabase secrets
+    const apiKey = Deno.env.get('API_KEY');
+    if (!apiKey) throw new Error("Server configuration error: Missing API_KEY");
     
     const ai = new GoogleGenAI({ apiKey });
     const currentMode = (mode === 'THERAPIST') ? 'THERAPIST' : 'PRIVATE';
     
     const geminiResponse = await ai.models.generateContent({
         model: "gemini-2.5-flash",
-        contents: `The user says: "${userInput}"`,
+        contents: { parts: [{ text: `The user says: "${userInput}"` }] },
         config: {
           systemInstruction,
           responseMimeType: "application/json",
@@ -153,23 +171,26 @@ serve(async (req) => {
           temperature: 0.7,
         },
     });
-
+    
     const jsonText = geminiResponse.text.trim();
-    const aegisResponse: AegisResponse = JSON.parse(jsonText);
+    // A simple type assertion to tell TypeScript what to expect
+    const aegisResponse = JSON.parse(jsonText) as AegisResponse;
 
     // 3. Persist AEGIS's response
-    await supabaseAdmin.from('chats').insert({
+    const { error: insertAegisError } = await supabaseAdmin.from('chats').insert({
       teen_id: teenId,
       sender: 'AEGIS',
       content: aegisResponse,
     });
+    if (insertAegisError) throw insertAegisError;
 
     // 4. If in Therapist mode and a summary was generated, persist it
     if (currentMode === 'THERAPIST' && aegisResponse.therapistSummary) {
-      await supabaseAdmin.from('summaries').insert({
+      const { error: summaryError } = await supabaseAdmin.from('summaries').insert({
         teen_id: teenId,
         summary_data: aegisResponse.therapistSummary,
       });
+      if (summaryError) throw summaryError; // Log if summary fails but don't crash the whole function
     }
 
     return new Response(JSON.stringify(aegisResponse), {

@@ -4,9 +4,10 @@ import { SendIcon } from './Icons.tsx';
 interface ChatInputProps {
   onSendMessage: (message: string) => void;
   disabled: boolean;
+  isAwaitingResponse: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
+const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled, isAwaitingResponse }) => {
   const [input, setInput] = useState('');
 
   const handleSend = () => {
@@ -23,6 +24,16 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
     }
   };
 
+  const getPlaceholderText = () => {
+    if (isAwaitingResponse) {
+      return "AEGIS is thinking...";
+    }
+    if (disabled) {
+      return "Please wait...";
+    }
+    return "Tell me what's on your mind...";
+  };
+
   return (
     <div className="p-4 bg-white" style={{ borderTop: '1px solid var(--border-color)'}}>
       <div className="relative max-w-4xl mx-auto">
@@ -30,7 +41,7 @@ const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, disabled }) => {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder={disabled ? "Session complete. Take a moment for yourself." : "Tell me what's on your mind..."}
+          placeholder={getPlaceholderText()}
           rows={1}
           className="w-full rounded-full py-3 pl-5 pr-16 resize-none focus:ring-2 focus:outline-none placeholder-gray-500 transition border"
           style={{ 

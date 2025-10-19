@@ -79,12 +79,14 @@ const App: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<TeenProfile | null>(null);
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
+  const [isAwaitingResponse, setIsAwaitingResponse] = useState<boolean>(false);
   const [isClearing, setIsClearing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [mode, setMode] = useState<AegisMode>('PRIVATE'); // We'll keep this for passing to the API
+  const [mode, setMode] = useState<AegisMode>('PRIVATE');
   const [animatingMessageId, setAnimatingMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fetchedUserId = useRef<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -99,7 +101,7 @@ const App: React.FC = () => {
   }, []);
   
   const fetchProfileAndChats = async (user_id: string) => {
-    setIsLoading(true);
+    setIsPageLoading(true);
     setError(null);
     try {
       // Fetch profile
@@ -134,17 +136,19 @@ const App: React.FC = () => {
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load data.');
     } finally {
-      setIsLoading(false);
+      setIsPageLoading(false);
     }
   };
 
   useEffect(() => {
-    if (session?.user) {
+    if (session?.user && session.user.id !== fetchedUserId.current) {
+      fetchedUserId.current = session.user.id;
       fetchProfileAndChats(session.user.id);
-    } else {
+    } else if (!session?.user) {
       setMessages([]);
       setProfile(null);
-      setIsLoading(false);
+      setIsPageLoading(false);
+      fetchedUserId.current = null;
     }
   }, [session]);
 
@@ -154,7 +158,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isLoading]);
+  }, [messages, isAwaitingResponse]);
   
   const handleConsentToggle = async (hasConsented: boolean) => {
     if (!profile) return;
@@ -183,7 +187,7 @@ const App: React.FC = () => {
       text: userInput,
     };
     setMessages(prev => [...prev, userMessage]);
-    setIsLoading(true);
+    setIsAwaitingResponse(true);
 
     if (checkForCriticalKeywords(userInput)) {
       const aegisSafetyMessageId = `aegis-${Date.now()}`;
@@ -194,7 +198,7 @@ const App: React.FC = () => {
       };
       setMessages(prev => [...prev, aegisSafetyMessage]);
       setAnimatingMessageId(aegisSafetyMessageId);
-      setIsLoading(false);
+      setIsAwaitingResponse(false);
       return;
     }
 
@@ -212,7 +216,7 @@ const App: React.FC = () => {
       const errorMsg = err instanceof Error ? err.message : "An unknown error occurred.";
       setError(errorMsg);
     } finally {
-      setIsLoading(false);
+      setIsAwaitingResponse(false);
     }
   };
 
@@ -247,6 +251,15 @@ const App: React.FC = () => {
 
   if (!session) {
     return <Auth />;
+  }
+  
+  if (isPageLoading && messages.length === 0) {
+    return (
+      <div className="flex flex-col h-screen items-center justify-center" style={{ backgroundColor: 'var(--bg-main)' }}>
+        <AegisIcon className="w-16 h-16 animate-pulse" />
+        <p className="mt-4 text-lg" style={{ color: 'var(--text-muted)' }}>Loading your session...</p>
+      </div>
+    );
   }
 
   const lastAegisMessage = [...messages].reverse().find(m => m.sender === MessageSender.AEGIS && m.aegisResponse?.wellbeingScore !== null);
@@ -306,7 +319,7 @@ const App: React.FC = () => {
               animate={msg.id === animatingMessageId} 
             />
           ))}
-          {isLoading && messages.length > 0 && (
+          {isAwaitingResponse && (
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center bg-gray-200">
                 <AegisIcon className="w-6 h-6 animate-pulse" />
@@ -332,7 +345,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="sticky bottom-0">
-        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading || isClearing} />
+        <ChatInput onSendMessage={handleSendMessage} disabled={isAwaitingResponse || isClearing} isAwaitingResponse={isAwaitingResponse} />
       </footer>
     </div>
   );

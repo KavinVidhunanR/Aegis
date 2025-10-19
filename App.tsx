@@ -82,6 +82,7 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<AegisMode>('PRIVATE'); // We'll keep this for passing to the API
+  const [animatingMessageId, setAnimatingMessageId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -184,24 +185,28 @@ const App: React.FC = () => {
     setIsLoading(true);
 
     if (checkForCriticalKeywords(userInput)) {
+      const aegisSafetyMessageId = `aegis-${Date.now()}`;
       const aegisSafetyMessage: ChatMessageType = {
-        id: `aegis-${Date.now()}`,
+        id: aegisSafetyMessageId,
         sender: MessageSender.AEGIS,
         aegisResponse: safetyAlertResponse,
       };
       setMessages(prev => [...prev, aegisSafetyMessage]);
+      setAnimatingMessageId(aegisSafetyMessageId);
       setIsLoading(false);
       return;
     }
 
     try {
       const aegisResponse = await getAegisResponse(userInput, mode);
+      const aegisMessageId = `aegis-${Date.now()}`;
       const aegisMessage: ChatMessageType = {
-        id: `aegis-${Date.now()}`,
+        id: aegisMessageId,
         sender: MessageSender.AEGIS,
         aegisResponse: aegisResponse,
       };
       setMessages(prev => [...prev, aegisMessage]);
+      setAnimatingMessageId(aegisMessageId);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : "An unknown error occurred.";
       setError(errorMsg);
@@ -256,7 +261,11 @@ const App: React.FC = () => {
       <main className="flex-1 overflow-y-auto p-4 md:p-8">
         <div className="max-w-4xl mx-auto space-y-8">
           {messages.map((msg) => (
-            <ChatMessage key={msg.id} message={msg} />
+            <ChatMessage 
+              key={msg.id} 
+              message={msg} 
+              animate={msg.id === animatingMessageId} 
+            />
           ))}
           {isLoading && messages.length > 0 && (
             <div className="flex items-start gap-4">

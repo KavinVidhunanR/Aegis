@@ -1,10 +1,11 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { ChatMessage as ChatMessageType, MessageSender, TherapistSummary } from '../types.ts';
 import { UserIcon, AegisIcon, ClipboardIcon } from './Icons.tsx';
 import TypingEffect from './TypingEffect.tsx';
 
 interface ChatMessageProps {
   message: ChatMessageType;
+  animate: boolean;
 }
 
 const TherapistSummaryDisplay: React.FC<{ summary: TherapistSummary }> = ({ summary }) => (
@@ -50,9 +51,20 @@ const TherapistSummaryDisplay: React.FC<{ summary: TherapistSummary }> = ({ summ
     </div>
 );
 
-const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
+const ChatMessage: React.FC<ChatMessageProps> = ({ message, animate }) => {
+  const [isTypingComplete, setIsTypingComplete] = useState(!animate);
   const isUser = message.sender === MessageSender.User;
+
+  useEffect(() => {
+    // If the animate prop becomes false (e.g., another message starts animating),
+    // ensure this one is fully displayed immediately.
+    if (!animate) {
+      setIsTypingComplete(true);
+    } else {
+      // If for some reason this message should become animated, reset its typing state.
+      setIsTypingComplete(false);
+    }
+  }, [animate]);
 
   const handleTypingComplete = useCallback(() => {
     setIsTypingComplete(true);
@@ -105,7 +117,11 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         </div>
         <div className="flex-1 max-w-2xl">
           <div className="p-4 rounded-xl rounded-bl-none space-y-4 shadow-sm" style={{ backgroundColor: 'var(--bg-subtle)', color: 'var(--text-main)' }}>
-            <TypingEffect text={empatheticReply} onComplete={handleTypingComplete} />
+            {animate ? (
+              <TypingEffect text={empatheticReply} onComplete={handleTypingComplete} />
+            ) : (
+              <p>{empatheticReply}</p>
+            )}
             
             {isTypingComplete && (
               <>

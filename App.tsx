@@ -9,7 +9,7 @@ import Auth from './components/Auth.tsx';
 import ChatInput from './components/ChatInput.tsx';
 import ChatMessage from './components/ChatMessage.tsx';
 import ScoreDisplay from './components/ScoreDisplay.tsx';
-import { AegisIcon } from './components/Icons.tsx';
+import { AegisIcon, TrashIcon } from './components/Icons.tsx';
 import ConfigurationNotice from './components/ConfigurationNotice.tsx';
 
 type AegisMode = 'PRIVATE' | 'THERAPIST';
@@ -80,6 +80,7 @@ const App: React.FC = () => {
   const [profile, setProfile] = useState<TeenProfile | null>(null);
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isClearing, setIsClearing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<AegisMode>('PRIVATE'); // We'll keep this for passing to the API
   const [animatingMessageId, setAnimatingMessageId] = useState<string | null>(null);
@@ -215,6 +216,35 @@ const App: React.FC = () => {
     }
   };
 
+  const handleClearChat = async () => {
+    if (!session?.user || isClearing) return;
+
+    const isConfirmed = window.confirm(
+      "Are you sure you want to clear your entire chat history? This action cannot be undone."
+    );
+
+    if (isConfirmed) {
+      setIsClearing(true);
+      setError(null);
+      try {
+        const { error: deleteError } = await supabase
+          .from('chats')
+          .delete()
+          .eq('teen_id', session.user.id);
+
+        if (deleteError) throw deleteError;
+        
+        // Reset messages to the initial state
+        setMessages([initialMessage]);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to clear chat history.');
+      } finally {
+        setIsClearing(false);
+      }
+    }
+  };
+
+
   if (!session) {
     return <Auth />;
   }
@@ -234,7 +264,7 @@ const App: React.FC = () => {
             <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Mind, Health, Voice</p>
           </div>
         </div>
-        <div className="flex items-center gap-4 md:gap-8">
+        <div className="flex items-center gap-4 md:gap-6">
           <ConsentToggle profile={profile} onToggle={handleConsentToggle} />
           {lastScore !== null && (
             <div className="hidden md:flex items-center gap-2">
@@ -242,6 +272,15 @@ const App: React.FC = () => {
                <ScoreDisplay score={lastScore} />
             </div>
           )}
+          <button
+            onClick={handleClearChat}
+            disabled={isClearing}
+            className="p-2 rounded-full text-gray-500 hover:bg-gray-200 hover:text-gray-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            aria-label="Clear chat history"
+            title="Clear chat history"
+          >
+              <TrashIcon className="w-5 h-5" />
+          </button>
           <button
             onClick={() => supabase.auth.signOut()}
             className="flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-lg transition-colors"
@@ -293,7 +332,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="sticky bottom-0">
-        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading} />
+        <ChatInput onSendMessage={handleSendMessage} disabled={isLoading || isClearing} />
       </footer>
     </div>
   );

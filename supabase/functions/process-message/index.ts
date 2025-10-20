@@ -5,7 +5,7 @@ declare const Deno: {
   };
 };
 
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.43.4';
 import { GoogleGenAI, Type } from "https://esm.sh/@google/genai@1.20.0";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { corsHeaders } from '../_shared/cors.ts'

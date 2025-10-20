@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Session } from '@supabase/supabase-js';
 import { supabase } from './lib/supabaseClient';
 import { isConfigured as isLocalConfigured } from './lib/config';
-import { ChatMessage as ChatMessageType, MessageSender, AegisResponse, TeenProfile } from './types.ts';
+import { ChatMessage as ChatMessageType, MessageSender, AegisResponse, TeenProfile, TherapistProfile } from './types.ts';
 import { getAegisResponse } from './services/geminiService.ts';
 import { checkForCriticalKeywords } from './utils/safetyCheck.ts';
 import Auth from './components/Auth.tsx';
 import ChatInput from './components/ChatInput.tsx';
 import ChatMessage from './components/ChatMessage.tsx';
 import ScoreDisplay from './components/ScoreDisplay.tsx';
+import TherapistModal from './components/TherapistModal.tsx';
 import { AegisIcon, TrashIcon } from './components/Icons.tsx';
 import ConfigurationNotice from './components/ConfigurationNotice.tsx';
 
@@ -85,6 +86,9 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<AegisMode>('PRIVATE');
   const [animatingMessageId, setAnimatingMessageId] = useState<string | null>(null);
+  const [isTherapistModalOpen, setIsTherapistModalOpen] = useState<boolean>(false);
+  const [assignedTherapists, setAssignedTherapists] = useState<TherapistProfile[]>([]);
+  const [isFetchingTherapists, setIsFetchingTherapists] = useState<boolean>(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fetchedUserId = useRef<string | null>(null);
 
@@ -162,20 +166,45 @@ const App: React.FC = () => {
   
   const handleConsentToggle = async (hasConsented: boolean) => {
     if (!profile) return;
-    
-    setMode(hasConsented ? 'THERAPIST' : 'PRIVATE'); // Update local state immediately for responsiveness
-    setProfile(p => p ? { ...p, consent_to_share: hasConsented } : null);
-
+  
+    // Optimistically update UI
+    setMode(hasConsented ? 'THERAPIST' : 'PRIVATE');
+    setProfile((p) => (p ? { ...p, consent_to_share: hasConsented } : null));
+  
     const { error } = await supabase
       .from('teens')
       .update({ consent_to_share: hasConsented })
       .eq('id', profile.id);
-
+  
     if (error) {
-      setError("Could not update consent settings.");
-       // Revert optimistic update on error
+      setError('Could not update consent settings.');
+      // Revert optimistic update on error
       setMode(!hasConsented ? 'THERAPIST' : 'PRIVATE');
-      setProfile(p => p ? { ...p, consent_to_share: !hasConsented } : null);
+      setProfile((p) => (p ? { ...p, consent_to_share: !hasConsented } : null));
+      return;
+    }
+  
+    // If user is CONSENTING, fetch therapists and show modal
+    if (hasConsented) {
+      setIsTherapistModalOpen(true);
+      setIsFetchingTherapists(true);
+      try {
+        // A remote procedure call (RPC) to a database function is a secure
+        // and efficient way to handle complex joins.
+        const { data, error: rpcError } = await supabase.rpc('get_assigned_therapists', {
+          teen_user_id: profile.id,
+        });
+
+        if (rpcError) throw rpcError;
+
+        setAssignedTherapists(data || []);
+
+      } catch (err) {
+        setError('Could not fetch assigned therapists.');
+        setAssignedTherapists([]); // clear on error
+      } finally {
+        setIsFetchingTherapists(false);
+      }
     }
   };
 
@@ -343,6 +372,13 @@ const App: React.FC = () => {
           <div ref={messagesEndRef} />
         </div>
       </main>
+
+      <TherapistModal
+        isOpen={isTherapistModalOpen}
+        onClose={() => setIsTherapistModalOpen(false)}
+        therapists={assignedTherapists}
+        isLoading={isFetchingTherapists}
+      />
 
       <footer className="sticky bottom-0">
         <ChatInput onSendMessage={handleSendMessage} disabled={isAwaitingResponse || isClearing} isAwaitingResponse={isAwaitingResponse} />

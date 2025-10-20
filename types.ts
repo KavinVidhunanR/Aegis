@@ -30,3 +30,8 @@ export interface TeenProfile {
   unique_display_id: string;
   consent_to_share: boolean;
 }
+
+export interface TherapistProfile {
+  id: string;
+  full_name: string;
+}

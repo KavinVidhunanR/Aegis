@@ -35,3 +35,13 @@ export interface TherapistProfile {
   id: string;
   full_name: string;
 }
+
+export type UserProfile = TeenProfile | TherapistProfile;
+
+// Represents a single summary record from the 'summaries' table
+export interface Summary {
+  id: string;
+  teen_id: string;
+  created_at: string;
+  summary_data: TherapistSummary;
+}

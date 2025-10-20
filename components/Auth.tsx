@@ -7,6 +7,7 @@ const Auth: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false);
+  const [role, setRole] = useState<'student' | 'psychiatrist'>('student');
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -20,8 +21,16 @@ const Auth: React.FC = () => {
       if (isSignUp) {
         // Sign Up
         // The database trigger 'on_auth_user_created' now handles profile creation automatically.
-        // We no longer need to manually insert from the client.
-        const { error } = await supabase.auth.signUp({ email, password });
+        // We pass the 'role' in user metadata so the trigger can create the correct profile type.
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              role: role,
+            },
+          },
+        });
         if (error) throw error;
         setMessage('Check your email for the verification link!');
       } else {
@@ -52,6 +61,35 @@ const Auth: React.FC = () => {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+          {isSignUp && (
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-center text-gray-700">I am a...</label>
+              <div className="relative flex justify-center rounded-md" role="group">
+                <button
+                  type="button"
+                  onClick={() => setRole('student')}
+                  className={`w-full px-4 py-2 text-sm font-medium border rounded-l-md focus:z-10 focus:ring-2 focus:ring-offset-0 focus:ring-red-500 focus:outline-none transition-colors duration-150 ${
+                    role === 'student'
+                      ? 'bg-red-600 border-red-600 text-white'
+                      : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  Student
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRole('psychiatrist')}
+                  className={`w-full px-4 py-2 text-sm font-medium border -ml-px rounded-r-md focus:z-10 focus:ring-2 focus:ring-offset-0 focus:ring-red-500 focus:outline-none transition-colors duration-150 ${
+                    role === 'psychiatrist'
+                      ? 'bg-red-600 border-red-600 text-white'
+                      : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  Psychiatrist
+                </button>
+              </div>
+            </div>
+          )}
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
               <label htmlFor="email-address" className="sr-only">Email address</label>

@@ -10,6 +10,7 @@ const SummaryCard: React.FC<{ summary: Summary }> = ({ summary }) => {
         year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
     });
 
+    // Safely render summary, providing fallbacks for missing data to prevent crashes.
     return (
         <div className="bg-white p-6 rounded-xl shadow-md border border-gray-200 space-y-4">
             <p className="text-sm font-semibold text-gray-500">{date}</p>
@@ -17,7 +18,7 @@ const SummaryCard: React.FC<{ summary: Summary }> = ({ summary }) => {
                 <div>
                     <p className="font-semibold" style={{ color: 'var(--text-heading)' }}>Mood Cues:</p>
                     <div className="flex flex-wrap gap-2 mt-1">
-                        {summary_data.moodCues.map((cue, index) => (
+                        {(summary_data?.moodCues || []).map((cue, index) => (
                             <span key={index} className="px-2 py-1 text-xs font-medium rounded-full" style={{ backgroundColor: 'var(--bg-user)', color: 'var(--text-main)' }}>
                                 {cue}
                             </span>
@@ -27,7 +28,7 @@ const SummaryCard: React.FC<{ summary: Summary }> = ({ summary }) => {
                 <div>
                     <p className="font-semibold" style={{ color: 'var(--text-heading)' }}>Possible Stressors:</p>
                     <div className="flex flex-wrap gap-2 mt-1">
-                        {summary_data.possibleStressors.map((stressor, index) => (
+                        {(summary_data?.possibleStressors || []).map((stressor, index) => (
                             <span key={index} className="px-2 py-1 text-xs font-medium rounded-full" style={{ backgroundColor: 'var(--bg-user)', color: 'var(--text-main)' }}>
                                 {stressor}
                             </span>
@@ -36,7 +37,7 @@ const SummaryCard: React.FC<{ summary: Summary }> = ({ summary }) => {
                 </div>
                 <div>
                     <p className="font-semibold" style={{ color: 'var(--text-heading)' }}>Suggested Follow-Up:</p>
-                    <p className="mt-1" style={{ color: 'var(--text-main)' }}>{summary_data.suggestedFollowUp}</p>
+                    <p className="mt-1" style={{ color: 'var(--text-main)' }}>{summary_data?.suggestedFollowUp || 'N/A'}</p>
                 </div>
             </div>
         </div>
@@ -184,7 +185,7 @@ const TherapistDashboard: React.FC = () => {
                         </>
                     ) : (
                         <div className="flex flex-col items-center justify-center h-full text-center">
-                            <AegisIcon className="w-24 h-24 text-gray-300" />
+                            <AegisIcon className="w-24 h-24" style={{ filter: 'grayscale(100%)', opacity: 0.4 }} />
                             <h2 className="mt-6 text-2xl font-semibold text-gray-700">Welcome to AEGIS</h2>
                             <p className="mt-2 text-gray-500">Please select a patient from the sidebar to view their AI-generated conversation summaries.</p>
                         </div>
